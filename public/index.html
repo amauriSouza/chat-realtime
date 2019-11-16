@@ -14,7 +14,6 @@
         <input type="text" name="username" placeholder="Usuário">
         <div class="messages">
         </div>
-        <div id="user-typing"></div>
         <input type="text" name="message" placeholder="Mensagem" onkeypress="isUserTyping()">
         <button type="submit">Enviar</button>
     </form>
@@ -26,33 +25,9 @@
 <script type="text/javascript">
     const socket = io('http://localhost:3000');
 
-    // FUNCAO PRA MOSTRAR MSGS
+    // FUNCAO PRA MOSTRAR MSGS NA TELA
     function renderMessage(messageObject) {
         $('.messages').append('<div class="message"><p><b>' + messageObject.username + '</b>: ' + messageObject.message + '</p></div>');
-    }
-
-    // FUNCAO PRA PEGAR O EVENTO(KEYPRESS), DE QUE ESTA DIGITANDO
-    function isUserTyping() {
-        const username = $('input[name=username]').val();
-        if (username !== '') {
-            // MONTO UM OBJ DO USUARIO ATUAL DIGITANDO
-            const newObj = { message: username + ' está digitando...' };
-            // FUNCAO QUE MOSTRA NA TELA O USUARIO DIGITANDO
-            showCurrentUserTyping(newObj);
-            // EMITO O EVENTO PRO SERVER DE QUEM ESTA DIGITANDO
-            socket.emit('sendUserTyping', newObj);
-        }
-
-    }
-
-    // FUNCAO QUE MOSTRA NA TELA O USUARIO DIGITANDO
-    function showCurrentUserTyping(params) {
-        $('#user-typing').empty();
-        $('#user-typing').append(params.message);
-        // EM 2 SEGUNDOS SMP LIMPO A MENSAGEM DE QUEM ESTA DIGITANDO, meio gambi isso, mas por hora ta ok
-        setTimeout(() => {
-            $('#user-typing').empty();
-        }, 2000);
     }
 
     // EVENTO QUE ESCUTA AS MSGS RECEBIDAS DO SERVER
@@ -60,19 +35,7 @@
         renderMessage(message);
     });
 
-    // EVENTO QUE ESCUTA O CARA ATUAL DIGITANDO
-    socket.on('receivedUserTyping', (message) => {
-        showCurrentUserTyping(message);
-    });
-
-    // EVENTO QUE PEGA TODAS MSGS QUE TEVE ATE AGORA NA CONEXAO SOCKET
-    socket.on('previousMessage', (messages) => {
-        // PERCORRO CADA MSG
-        messages.forEach(element => {
-            renderMessage(element);
-        });
-    });
-
+ 
     // FUNCAO PRA ENVIAR MENSAGEM
     $('#chat').submit((event) => {
         event.preventDefault();
