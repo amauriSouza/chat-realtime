@@ -1,45 +1,98 @@
-html, body {
-    height: 100%;
-  }
-  
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  #chat {
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-  }
-  
-  input {
-    width: 600px;
-    border: 1px solid #ddd;
-    height: 50px;
-    padding: 0 20px;
-    font-size: 14px;
-  }
-  
-  button {
-    width: 600px;
-    height: 50px;
-    font-size: 14px;
-    background: #069;
-    text-align: center;
-    line-height: 50px;
-    font-weight: bold;
-    color: #FFF;
-    margin-top: 10px;
-  }
-  
-  .messages {
-    width: 600px;
-    height: 400px;
-    margin: 20px 0;
-    border: 1px solid #ddd;
-    padding: 20px;
-  }
+html,
+body {
+  height: 100%;
+  font-family: "Roboto", sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+#chat {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+input {
+  width: 600px;
+  border: 1px solid #ddd;
+  height: 50px;
+  padding: 0 20px;
+  font-size: 14px;
+  border-radius: 5px;
+  margin-top: 5px;
+}
+
+.fa {
+  margin-right: 10px;
+}
+
+button {
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    0 3px 1px -2px rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.2);
+  font-weight: bold;
+  cursor: pointer;
+  color: #fff;
+  margin-top: 10px;
+  border: none;
+  margin: 5px;
+  padding: 15px;
+  border-radius: 5px;
+  font-size: 15px;
+}
+
+.size-content__buttons{
+  width: 600px;
+  display: flex;
+  justify-content: center;
+}
+
+.send-button{
+  background: #4285f4;
+}
+
+button:focus {
+  outline: none;
+}
+
+.clean-button{
+  background: #ea4335;
+}
+.messages {
+  width: 600px;
+  height: 400px;
+  margin: 20px 0;
+  border: 1px solid #ddd;
+  padding: 20px;
+  overflow-y: scroll;
+}
+
+
+#scroll-bar::-webkit-scrollbar-track {
+  border-radius: 10px;
+}
+
+#scroll-bar::-webkit-scrollbar {
+  width: 6px;
+}
+
+#scroll-bar::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 10px;
+}
+
+.flex-direction__column {
+  display: flex;
+  flex-direction: column;
+}
+
+#user-typing {
+  font-size: 14px;
+  font-style: italic;
+  margin-top: 10px;
+}

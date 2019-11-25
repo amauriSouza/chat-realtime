@@ -1,98 +1,141 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto&display=swap"
+      rel="stylesheet"
+    />
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="style.css">
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style.css" />
     <title>Chat</title>
-</head>
+  </head>
 
-<body>
+  <body>
     <form id="chat">
-        <input type="text" name="username" placeholder="Usuário">
-        <div class="messages">
-        </div>
-        <div id="user-typing"></div>
-        <input type="text" name="message" placeholder="Mensagem" onkeypress="isUserTyping()">
-        <button type="submit">Enviar</button>
+      <div class="flex-direction__column">
+        <span>Nome: </span>
+        <input type="text" name="username" placeholder="Usuário" />
+      </div>
+
+      <div class="messages" id="scroll-bar"></div>
+
+      <div class="flex-direction__column">
+        <span>Mensagem: </span>
+        <input
+          type="text"
+          name="message"
+          placeholder="Mensagem"
+          onkeypress="isUserTyping()"
+        />
+      </div>
+      <div id="user-typing"></div>
+
+      <div class="size-content__buttons">
+        <button type="submit" class="send-button">
+          <i class="fa fa-paper-plane-o" aria-hidden="true"></i>Enviar
+        </button>
+
+        <button type="submit" class="clean-button" onclick="cleanFields();">
+          <i class="fa fa-times-circle" aria-hidden="true"></i>Limpar
+        </button>
+      </div>
     </form>
-</body>
+  </body>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
 
-<script type="text/javascript">
-    const socket = io('http://localhost:3000');
+  <script type="text/javascript">
+    const socket = io("http://localhost:3000");
+
+    function cleanFields() {
+      $("input[name=username]").val("");
+      $("input[name=message]").val("");
+      $("#user-typing").empty();
+      $("input[name=username]").focus();
+    }
 
     // FUNCAO PRA MOSTRAR MSGS
     function renderMessage(messageObject) {
-        $('.messages').append('<div class="message"><p><b>' + messageObject.username + '</b>: ' + messageObject.message + '</p></div>');
+      $(".messages").append(
+        '<div class="message"><p><b>' +
+          messageObject.username +
+          "</b>: " +
+          messageObject.message +
+          "</p></div>"
+      );
     }
 
     // FUNCAO PRA PEGAR O EVENTO(KEYPRESS), DE QUE ESTA DIGITANDO
     function isUserTyping() {
-        const username = $('input[name=username]').val();
-        if (username !== '') {
-            // MONTO UM OBJ DO USUARIO ATUAL DIGITANDO
-            const newObj = { message: username + ' está digitando...' };
-            // FUNCAO QUE MOSTRA NA TELA O USUARIO DIGITANDO
-            showCurrentUserTyping(newObj);
-            // EMITO O EVENTO PRO SERVER DE QUEM ESTA DIGITANDO
-            socket.emit('sendUserTyping', newObj);
-        }
-
+      const username = $("input[name=username]").val();
+      if (username !== "") {
+        // MONTO UM OBJ DO USUARIO ATUAL DIGITANDO
+        const newObj = { message: username + " está digitando..." };
+        // FUNCAO QUE MOSTRA NA TELA O USUARIO DIGITANDO
+        showCurrentUserTyping(newObj);
+        // EMITO O EVENTO PRO SERVER DE QUEM ESTA DIGITANDO
+        socket.emit("sendUserTyping", newObj);
+      }
     }
 
     // FUNCAO QUE MOSTRA NA TELA O USUARIO DIGITANDO
     function showCurrentUserTyping(params) {
-        $('#user-typing').empty();
-        $('#user-typing').append(params.message);
-        // EM 2 SEGUNDOS SMP LIMPO A MENSAGEM DE QUEM ESTA DIGITANDO, meio gambi isso, mas por hora ta ok
-        setTimeout(() => {
-            $('#user-typing').empty();
-        }, 2000);
+      $("#user-typing").empty();
+      $("#user-typing").append(params.message);
+      // EM 2 SEGUNDOS SMP LIMPO A MENSAGEM DE QUEM ESTA DIGITANDO, meio gambi isso, mas por hora ta ok
+      setTimeout(() => {
+        $("#user-typing").empty();
+      }, 2000);
     }
 
     // EVENTO QUE ESCUTA AS MSGS RECEBIDAS DO SERVER
-    socket.on('receivedMessage', (message) => {
-        renderMessage(message);
+    socket.on("receivedMessage", message => {
+      renderMessage(message);
     });
 
     // EVENTO QUE ESCUTA O CARA ATUAL DIGITANDO
-    socket.on('receivedUserTyping', (message) => {
-        showCurrentUserTyping(message);
+    socket.on("receivedUserTyping", message => {
+      showCurrentUserTyping(message);
     });
 
     // EVENTO QUE PEGA TODAS MSGS QUE TEVE ATE AGORA NA CONEXAO SOCKET
-    socket.on('previousMessage', (messages) => {
-        // PERCORRO CADA MSG
-        messages.forEach(element => {
-            renderMessage(element);
-        });
+    socket.on("previousMessage", messages => {
+      // PERCORRO CADA MSG
+      messages.forEach(element => {
+        renderMessage(element);
+      });
     });
 
     // FUNCAO PRA ENVIAR MENSAGEM
-    $('#chat').submit((event) => {
-        event.preventDefault();
+    $("#chat").submit(event => {
+      $("#user-typing").empty();
+      event.preventDefault();
 
-        const username = $('input[name=username]').val();
-        const message = $('input[name=message]').val();
+      const username = $("input[name=username]").val();
+      const message = $("input[name=message]").val();
 
-        if (username.length && message.length) {
-            const messageObject = {
-                username,
-                message
-            };
+      if (username.length && message.length) {
+        const messageObject = {
+          username,
+          message
+        };
 
-            // FUNCAO PRA MOSTRAR MSGS
-            renderMessage(messageObject);
-            // EVENTO QUE EMITE A MSG DIGITADA PELO O USUARIO
-            socket.emit('sendMessage', messageObject);
-        }
+        // FUNCAO PRA MOSTRAR MSGS
+        renderMessage(messageObject);
+        // EVENTO QUE EMITE A MSG DIGITADA PELO O USUARIO
+        socket.emit("sendMessage", messageObject);
+      }
+
+      $("input[name=message]").val("");
     });
-
-</script>
-
+  </script>
 </html>
