@@ -25,7 +25,12 @@
         <input type="text" name="username" placeholder="Digite seu usuário" />
       </div>
 
-      <div class="messages" id="scroll-bar"></div>
+      <div class="box-main">
+          <div class="messages" id="scroll-bar">
+          </div>
+          <div id="user-typing"></div>
+      </div>
+
 
       <div class="flex-direction__column">
         <span>Mensagem: </span>
@@ -36,7 +41,6 @@
           onkeypress="isUserTyping()"
         />
       </div>
-      <div id="user-typing"></div>
 
       <div class="size-content__buttons">
         <button type="submit" class="send-button">
